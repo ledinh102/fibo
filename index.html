@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+   <meta charset="UTF-8">
+   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Document</title>
+
+   <style>
+      * {
+         box-sizing: border-box;
+         margin: 0;
+         padding: 0;
+      }
+
+      .container {
+         text-align: center;
+         margin: 100px auto 50px;
+         width: 50%;
+         height: 50%;
+      }
+
+      h1 {
+         margin-bottom: 30px;
+      }
+
+      input,
+      button {
+         height: 40px;
+         border-width: 2px;
+         border-radius: 4px;
+         border-color: rgba(0, 195, 255, 0.356);
+         box-shadow: none;
+      }
+
+      input {
+         width: 70%;
+         padding: 0 10px;
+         outline: none;
+         margin-right: 10px;
+         font-size: 14px;
+      }
+
+      button {
+         width: 20%;
+         background-color: rgba(0, 195, 255, 0.623);
+         border-width: 0;
+         font-size: 16px;
+         font-weight: 300;
+         cursor: pointer;
+      }
+
+      button:hover {
+         opacity: 0.9;
+      }
+
+      .print-value {
+         text-align: left;
+         line-height: 60px;
+         font-size: 20px;
+      }
+
+      .warn {
+         color: red;
+         text-align: center;
+      }
+
+      /* span {
+         margin-right: 16px;
+         padding: 6px 16px;
+         border-radius: 50px;
+         background-color: rgba(0, 195, 255, 0.623);
+      } */
+   </style>
+
+</head>
+
+<body>
+   <div class="app">
+      <div class="container">
+         <h1 class="header">In dãy fibonacci</h1>
+         <input class="input" type="text" placeholder="Nhập số nguyên dương">
+         <button class="find-btn">Tìm</button>
+      </div>
+
+      <div class="print-value">
+
+      </div>
+   </div>
+
+   <script>
+      let button = document.getElementsByClassName("find-btn")[0]
+      let input = document.getElementsByClassName("input")[0]
+      let printValues = document.getElementsByClassName("print-value")[0]
+
+      function add(A, B) {
+         const AL = A.length
+         const BL = B.length
+         const ML = Math.max(AL, BL)
+
+         let carry = 0,
+            sum = ''
+
+         for (let i = 1; i <= ML; i++) {
+            let a = +A.charAt(AL - i)
+            let b = +B.charAt(BL - i)
+
+            let t = carry + a + b
+            carry = t / 10 | 0
+            t %= 10
+
+            sum = (i === ML && carry) ?
+               carry * 10 + t + sum :
+               t + sum
+         }
+
+         return sum
+      }
+
+      function inputValid(n) {
+         n = n.trim()
+         if (isNumber(n)) {
+            return true
+         } else {
+            printValues.classList.add('warn')
+            if (n === "")
+               printValues.innerHTML = "Vui lòng không để trống đầu vào"
+            else if (n < 0)
+               printValues.innerHTML = "Vui lòng nhập số nguyên dương"
+            else if (!isNumber(n))
+               printValues.innerHTML = "Vui lòng nhập lại, giá trị vừa nhập không phải là số"
+            return false
+         }
+      }
+
+
+      function isNumber(n) {
+         if (n.length === 0) return false
+         else {
+            for (var i = 0; i < n.length; i++) {
+               if (!(n[i] >= '0' && n[i] <= '9'))
+                  return false
+            }
+            return true
+         }
+      }
+
+      function findFibos(n) {
+         if (n < 0) txt = ""
+         else {
+            let currentValue = "0",
+               nextValue = "1"
+            let fiboN = 0
+            for (var i = 0; i < n; i++) {
+               var printFibo = setTimeout(function () {
+                  fiboN = add(currentValue, nextValue)
+                  currentValue = nextValue
+                  nextValue = fiboN
+
+                  let tagSpan = document.createElement('span')
+                  printValues.appendChild(tagSpan)
+                  tagSpan.innerHTML = fiboN + ", "
+               }, i*3)
+               if(i*3 === 10000) alert("Not responsing")
+            }
+         }
+      }
+
+      button.onclick = function () {
+         printValues.classList.remove('warn')
+         let number = input.value
+
+         console.log(inputValid(number))
+         if (inputValid(number)) {
+            findFibos(number)
+         }
+
+         input.focus()
+         input.value = ""
+
+      }
+
+      input.onkeydown = function (e) {
+         if (e.keyCode === 13) {
+            button.onclick()
+            this.value = ""
+         }
+      }
+   </script>
+</body>
+
+</html>
